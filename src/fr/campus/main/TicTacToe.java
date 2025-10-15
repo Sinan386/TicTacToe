@@ -1,13 +1,16 @@
 package fr.campus.main;
 
 import fr.campus.board.Cell;
+import fr.campus.player.Player;
 
-import java.sql.SQLOutput;
 
 public class TicTacToe {
+
     public static final int SIZE = 3;
 
     private Cell[][] board;
+    private Player player;
+
 
     public TicTacToe() {
         board = new Cell[SIZE][SIZE];
