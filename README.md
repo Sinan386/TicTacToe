@@ -1,7 +1,7 @@
 # Diagramme
 ```mermaid
 classDiagram
-Main : + void main(String[] args)
+Main : + void fr.campus.main(String[] args)
 
     class TicTacToe {
       - board
