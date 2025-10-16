@@ -4,15 +4,17 @@ import java.util.Scanner;
 import fr.campus.player.Player;
 
 
-
+/**
+ * Create a unique scanner for the all app
+ */
 public class Menu {
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
-    public Player getRepresentation(){
-    System.out.println("=== Bienvenue à toi ===");
-    System.out.print("Choisissez votre symbole (X ou O) : ");
-    String input = scanner.nextLine();
+    public Menu() {
+        this.scanner = new Scanner(System.in);
+    }
 
-        return null;
+    public Scanner getScanner() {
+        return scanner;
     }
 }

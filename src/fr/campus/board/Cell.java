@@ -6,4 +6,8 @@ public class Cell {
         return "   ";
     }
 
+    public void setSymbol (String symbol){
+        this.symbol = symbol;
+    }
+
 }
