@@ -43,49 +43,66 @@ public class TicTacToe {
         Player player = new Player(symbole);
         System.out.println("Tu joues avec : " + player.getRepresentation());
         display();
+        while (true) {
+            int[] mv = getMoveFromPlayer();
+            setOwner(mv[0], mv[1], player);
+            display();
+        }
     }
 
 
-    public int[] getMoveFromPlayer(int x, int y) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Entre le numéro de la ligne (0, 1 où 2) ");
-        int ligne = scanner.nextInt();
+    public int[] getMoveFromPlayer() {
+        int ligne = -1;
+        int colonne = -1;
 
-        System.out.println("Entre le numéro de la colonne (0, 1 où 2) ");
-        int colonne = scanner.nextInt();
+        while (true) {
+            System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : ");
+            if (!scanner.hasNextInt()) {
+                System.out.println("Entrez un nombre !");
+                scanner.next();
+                continue;
+            }
+            ligne = scanner.nextInt();
 
-        if (ligne < 0 || ligne > (SIZE - 1) || colonne < 0 || colonne > (SIZE - 1)) {
-            System.out.println(" Entre un chiffre valide ! 0, 1 où 2");
+            System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : ");
+            if (!scanner.hasNextInt()) {
+                System.out.println("Entrez un nombre !");
+                scanner.next();
+                continue;
+            }
+            colonne = scanner.nextInt();
+            scanner.nextLine();
+
+            if (ligne < 0 || ligne >= SIZE || colonne < 0 || colonne >= SIZE) {
+                System.out.println("Coordonnées hors du plateau. Réessayez.");
+                continue;
+            }
+            if (!board[ligne][colonne].isEmpty()) {
+                System.out.println("Cette case est déjà occupée. Réessayez.");
+                continue;
+            }
+            break;
         }
         return new int[]{ligne, colonne};
-
     }
 
     public void setOwner(int x, int y, Player player) {
         if (x >= 0 && x < SIZE && y >= 0 && y < SIZE) {
             board[x][y].setSymbol(player.getRepresentation());
-        }else{
+        } else {
             System.out.println("Hors limites");
-
         }
-
-
-
     }
 
     public void display() {
-        System.out.println("---------------");
+        System.out.println(" ------------- ");
         for (int i = 0; i < SIZE; i++) {
             System.out.print("|");
             for (int j = 0; j < SIZE; j++) {
-                System.out.print("   |");
+                System.out.print(board[i][j].getRepresentation() + "|");
             }
             System.out.println();
-            System.out.println("--------------");
-
-
+            System.out.println(" ------------- ");
         }
-
     }
 }
-
