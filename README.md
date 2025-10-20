@@ -1,48 +1,59 @@
 # Diagramme
 ```mermaid
 classDiagram
-Main : + void fr.campus.main(String[] args)
+    class Main {
+        +void main(String[] args)
+    }
 
     class TicTacToe {
-      - board
-      - player1
-      - player2
-      
-      + void start()
-      + void playTurn(int row, int col)
-      
+        +SIZE : int
+        -board : Cell[][]
+        -scanner : java.util.Scanner
+        -players : Player[2]
+        -currentPlayerIndex : int
+
+        +TicTacToe()
+        +void start()
+        +boolean isOver()
+        +int[] getMoveFromPlayer()
+        +void setOwner(int x, int y, Player player)
+        +void display()
+
+        -Player getCurrentPlayer()
+        -void switchPlayer()
+        -boolean isBoardFull()
+        -boolean hasThreeFrom(int x, int y)
+        -int countInDirection(int x, int y, int dx, int dy, String symbol)
+        -void playMove(int row, int col, Player player)
+        -void initBoard()
     }
-    class Board {
-      - Cell[][] cells
-      + boolean play(int row, int col, mark)                                                                                                                                                                          
-      + boolean isFull()
-      + getCell(int row, int col)
-      + void reset()
+
+    class Menu {
+        -scanner : java.util.Scanner
+        +Menu()
+        +java.util.Scanner getScanner()
     }
 
     class Cell {
-        - mark
-        + String getRepresentation()
-        +boolean isEmpty ()
-
+        -symbol : String
+        +String getRepresentation()
+        +boolean isEmpty()
+        +String getSymbol()
+        +void setSymbol(String symbol)
     }
 
     class Player {
-            String name
-        }
-
-    class Mark {
-        enum O 
-        enum X
-        enum Empty
+        -representation : String
+        +Player(String representation)
+        +String getRepresentation()
     }
 
- Main --> TicTacToe
- TicTacToe --> Board
- Board      --> Cell
- TicTacToe --> Player
- Cell --> Mark
- Player --> Mark
+%% Relations
+    Main --> TicTacToe
+    TicTacToe --> Cell
+    TicTacToe -->  Player
+    TicTacToe --> Menu
+
 
 
 

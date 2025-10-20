@@ -11,13 +11,99 @@ public class TicTacToe {
 
     private final Cell[][] board = new Cell[SIZE][SIZE];
     private final Scanner scanner;
+    private final Player[] players = {new Player("X"), new Player("O")};
+    private int currentPlayerIndex = 0;
 
+
+    private Player getCurrentPlayer() {
+        return players[currentPlayerIndex];
+    }
+
+    private void switchPlayer() {
+        currentPlayerIndex = 1 - currentPlayerIndex;
+    }
+
+
+    private boolean isBoardFull() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (board[i][j].isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isOver() {
+        if (isBoardFull()) {
+            System.out.println("Match nul !");
+            return true;
+        }
+
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+
+                if (!board[x][y].isEmpty() && checkWin(x, y)) {
+                    System.out.println("Le joueur " + board[x][y].getSymbol() + " a gagné !");
+                    return true;
+                }
+            }
+        }
+        if (isBoardFull()) {
+            System.out.println("Match nul !");
+            return true;
+        }
+        return false;
+    }
+
+
+    private boolean checkWin(int x, int y) {
+        String symbol = board[x][y].getSymbol();
+        if (symbol.isEmpty()) return false;
+
+        // Horizontal
+        int count = 1 + countInDirection(x, y, 0, +1, symbol) + countInDirection(x, y, 0, -1, symbol);
+        if (count >= 3) return true;
+
+        // Vertical
+        count = 1 + countInDirection(x, y, +1, 0, symbol) + countInDirection(x, y, -1, 0, symbol);
+        if (count >= 3) return true;
+
+        // Diagonale gauche droite
+        count = 1 + countInDirection(x, y, +1, +1, symbol) + countInDirection(x, y, -1, -1, symbol);
+        if (count >= 3) return true;
+
+        // Diagonale droite gauche
+        count = 1 + countInDirection(x, y, +1, -1, symbol) + countInDirection(x, y, -1, +1, symbol);
+        return count >= 3;
+    }
+
+    private int countInDirection(int x, int y, int dx, int dy, String symbol) {
+        int count = 0;
+        int newX = x + dx;
+        int newY = y + dy;
+
+        while (newX >= 0 && newX < SIZE && newY >= 0 && newY < SIZE && board[newX][newY].getSymbol().equals(symbol)) {
+            count++;
+            newX += dx;
+            newY += dy;
+        }
+
+        return count;
+    }
+
+
+    private void playMove(int row, int col, Player player) {
+        board[row][col].setSymbol(player.getRepresentation()); // "X" ou "O"
+    }
 
     public TicTacToe() {
         Menu menu = new Menu();
         this.scanner = menu.getScanner();
         initBoard();
     }
+
 
     private void initBoard() {
         for (int i = 0; i < SIZE; i++) {
@@ -31,7 +117,6 @@ public class TicTacToe {
     public void start() {
         String symbole = "";
 
-
         while (!symbole.equals("X") && !symbole.equals("O")) {
             System.out.print("Choisissez votre symbole (X ou O) : ");
             symbole = scanner.nextLine().trim().toUpperCase();
@@ -40,69 +125,92 @@ public class TicTacToe {
                 System.out.println("symbole invalide.");
             }
         }
-        Player player = new Player(symbole);
-        System.out.println("Tu joues avec : " + player.getRepresentation());
-        display();
-        while (true) {
-            int[] mv = getMoveFromPlayer();
-            setOwner(mv[0], mv[1], player);
-            display();
-        }
-    }
-
-
-    public int[] getMoveFromPlayer() {
-        int ligne = -1;
-        int colonne = -1;
-
-        while (true) {
-            System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : ");
-            if (!scanner.hasNextInt()) {
-                System.out.println("Entrez un nombre !");
-                scanner.next();
-                continue;
-            }
-            ligne = scanner.nextInt();
-
-            System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : ");
-            if (!scanner.hasNextInt()) {
-                System.out.println("Entrez un nombre !");
-                scanner.next();
-                continue;
-            }
-            colonne = scanner.nextInt();
-            scanner.nextLine();
-
-            if (ligne < 0 || ligne >= SIZE || colonne < 0 || colonne >= SIZE) {
-                System.out.println("Coordonnées hors du plateau. Réessayez.");
-                continue;
-            }
-            if (!board[ligne][colonne].isEmpty()) {
-                System.out.println("Cette case est déjà occupée. Réessayez.");
-                continue;
-            }
-            break;
-        }
-        return new int[]{ligne, colonne};
-    }
-
-    public void setOwner(int x, int y, Player player) {
-        if (x >= 0 && x < SIZE && y >= 0 && y < SIZE) {
-            board[x][y].setSymbol(player.getRepresentation());
+        if (symbole.equals("X")) {
+            currentPlayerIndex = 0;
         } else {
-            System.out.println("Hors limites");
+            currentPlayerIndex = 1;
+        }
+
+        System.out.println("Tu commences avec : " + players[currentPlayerIndex].getRepresentation());
+
+        display();
+
+        while (true) {
+            Player current = getCurrentPlayer();
+            System.out.println("Tour de : " + current.getRepresentation());
+
+            int[] mv = getMoveFromPlayer();
+            playMove(mv[0], mv[1], current);
+            display();
+
+
+            if (checkWin(mv[0], mv[1])) {
+                System.out.println("Le joueur " + current.getRepresentation() + " a gagné !");
+                break;
+            }
+            if (isBoardFull()) {
+                System.out.println("Match nul !");
+                break;
+            }
+
+            switchPlayer();
         }
     }
 
-    public void display() {
-        System.out.println(" ------------- ");
-        for (int i = 0; i < SIZE; i++) {
-            System.out.print("|");
-            for (int j = 0; j < SIZE; j++) {
-                System.out.print(board[i][j].getRepresentation() + "|");
+
+
+        public int[] getMoveFromPlayer () {
+            int ligne = -1;
+            int colonne = -1;
+
+            while (true) {
+                System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : ");
+                if (!scanner.hasNextInt()) {
+                    System.out.println("Entrez un nombre !");
+                    scanner.next();
+                    continue;
+                }
+                ligne = scanner.nextInt();
+
+                System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : ");
+                if (!scanner.hasNextInt()) {
+                    System.out.println("Entrez un nombre !");
+                    scanner.next();
+                    continue;
+                }
+                colonne = scanner.nextInt();
+                scanner.nextLine();
+
+                if (ligne < 0 || ligne >= SIZE || colonne < 0 || colonne >= SIZE) {
+                    System.out.println("Coordonnées hors du plateau. Réessayez.");
+                    continue;
+                }
+                if (!board[ligne][colonne].isEmpty()) {
+                    System.out.println("Cette case est déjà occupée. Réessayez.");
+                    continue;
+                }
+                break;
             }
-            System.out.println();
+            return new int[]{ligne, colonne};
+        }
+
+/*        public void setOwner ( int x, int y, Player player){
+            if (x >= 0 && x < SIZE && y >= 0 && y < SIZE) {
+                board[x][y].setSymbol(player.getRepresentation());
+            } else {
+                System.out.println("Hors limites");
+            }
+        }*/
+
+        public void display () {
             System.out.println(" ------------- ");
+            for (int i = 0; i < SIZE; i++) {
+                System.out.print("|");
+                for (int j = 0; j < SIZE; j++) {
+                    System.out.print(board[i][j].getRepresentation() + "|");
+                }
+                System.out.println();
+                System.out.println(" ------------- ");
+            }
         }
     }
-}
