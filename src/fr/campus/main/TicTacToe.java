@@ -1,6 +1,7 @@
 package fr.campus.main;
 
 import fr.campus.board.Cell;
+import fr.campus.player.ArtificialPlayer;
 import fr.campus.player.Player;
 
 import java.util.Scanner;
@@ -11,8 +12,12 @@ public class TicTacToe {
 
     private final Cell[][] board = new Cell[SIZE][SIZE];
     private final Scanner scanner;
-    private final Player[] players = {new Player("X"), new Player("O")};
+    private final Player[] players = {new Player("X"), new ArtificialPlayer("O")};
     private int currentPlayerIndex = 0;
+
+    public Cell[][] getBoard() {
+        return board;
+    }
 
 
     private Player getCurrentPlayer() {
@@ -114,6 +119,8 @@ public class TicTacToe {
     }
 
 
+
+
     public void start() {
         String symbole = "";
 
@@ -139,9 +146,13 @@ public class TicTacToe {
             Player current = getCurrentPlayer();
             System.out.println("Tour de : " + current.getRepresentation());
 
-            int[] mv = getMoveFromPlayer();
+            int ligne,colonne;
+
+            int[] mv = current.getMove();
             playMove(mv[0], mv[1], current);
             display();
+
+
 
 
             if (checkWin(mv[0], mv[1])) {
@@ -159,40 +170,7 @@ public class TicTacToe {
 
 
 
-        public int[] getMoveFromPlayer () {
-            int ligne = -1;
-            int colonne = -1;
 
-            while (true) {
-                System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : ");
-                if (!scanner.hasNextInt()) {
-                    System.out.println("Entrez un nombre !");
-                    scanner.next();
-                    continue;
-                }
-                ligne = scanner.nextInt();
-
-                System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : ");
-                if (!scanner.hasNextInt()) {
-                    System.out.println("Entrez un nombre !");
-                    scanner.next();
-                    continue;
-                }
-                colonne = scanner.nextInt();
-                scanner.nextLine();
-
-                if (ligne < 0 || ligne >= SIZE || colonne < 0 || colonne >= SIZE) {
-                    System.out.println("Coordonnées hors du plateau. Réessayez.");
-                    continue;
-                }
-                if (!board[ligne][colonne].isEmpty()) {
-                    System.out.println("Cette case est déjà occupée. Réessayez.");
-                    continue;
-                }
-                break;
-            }
-            return new int[]{ligne, colonne};
-        }
 
 /*        public void setOwner ( int x, int y, Player player){
             if (x >= 0 && x < SIZE && y >= 0 && y < SIZE) {
