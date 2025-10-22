@@ -10,11 +10,12 @@ import org.w3c.dom.ls.LSOutput;
 
 public class Player {
     private String representation = "X";
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
 
-    public Player(String representation) {
+    public Player(String representation, Scanner scanner) {
         this.representation = representation;
+        this.scanner = scanner;
     }
 
 
@@ -27,7 +28,7 @@ public class Player {
         int colonne = -1;
 
         while (true) {
-            System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : " + (TicTacToe.SIZE - 1));
+            System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : ");
             if (!scanner.hasNextInt()) {
                 System.out.println("Entrez un nombre !");
                 scanner.next();
@@ -35,12 +36,12 @@ public class Player {
             }
             ligne = scanner.nextInt();
 
-            System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : " + (TicTacToe.SIZE - 1));
+            System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : ");
             if (!scanner.hasNextInt()) {
                 System.out.println("Entrez un nombre !");
                 scanner.next();
-                continue;
-            }
+                continue;}
+
             colonne = scanner.nextInt();
             scanner.nextLine();
 
@@ -49,7 +50,6 @@ public class Player {
                 System.out.println("Coordonnées hors du plateau. Réessayez.");
                 continue;
             }
-
 
             break;
         }
