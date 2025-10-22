@@ -27,7 +27,7 @@ public class Player {
         int colonne = -1;
 
         while (true) {
-            System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : ");
+            System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : " + (TicTacToe.SIZE - 1));
             if (!scanner.hasNextInt()) {
                 System.out.println("Entrez un nombre !");
                 scanner.next();
@@ -35,7 +35,7 @@ public class Player {
             }
             ligne = scanner.nextInt();
 
-            System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : ");
+            System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : " + (TicTacToe.SIZE - 1));
             if (!scanner.hasNextInt()) {
                 System.out.println("Entrez un nombre !");
                 scanner.next();
@@ -44,22 +44,19 @@ public class Player {
             colonne = scanner.nextInt();
             scanner.nextLine();
 
-            private boolean checkAvailable () {
-                if (ligne < 0 || ligne >= TicTacToe.SIZE || colonne < 0 || colonne >= TicTacToe.SIZE) {
-                    System.out.println("Coordonnées hors du plateau. Réessayez.");
-                    continue;
-                }
+
+            if (ligne < 0 || ligne >= TicTacToe.SIZE || colonne < 0 || colonne >= TicTacToe.SIZE) {
+                System.out.println("Coordonnées hors du plateau. Réessayez.");
+                continue;
             }
 
-            private boolean isEmpty () {
-                if (!TicTacToe.getBoard()[ligne][colonne].isEmpty()) {
-                    System.out.println("Cette case est déjà occupée. Réessayez.");
-                    continue;
-                }
-            }
+
             break;
         }
         return new int[]{ligne, colonne};
+
     }
 
+
 }
+

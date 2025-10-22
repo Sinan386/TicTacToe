@@ -146,12 +146,15 @@ public class TicTacToe {
             Player current = getCurrentPlayer();
             System.out.println("Tour de : " + current.getRepresentation());
 
-            int ligne,colonne;
 
             int[] mv = current.getMove();
             playMove(mv[0], mv[1], current);
             display();
 
+            if (!board[mv[0]][mv[1]].isEmpty()) {
+                System.out.println(" Cette case est déjà occupée. Réessayez.");
+                continue;
+            }
 
 
 
