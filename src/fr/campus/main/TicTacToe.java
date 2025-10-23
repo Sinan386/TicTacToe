@@ -19,7 +19,7 @@ public class TicTacToe extends Game {
             if (x >= 0 && x < SIZE && y >= 0 && y < SIZE) {
                 board[x][y].setSymbol(player.getRepresentation());
             } else {
-                System.out.println("Hors limites");
+                view.println.println("Hors limites");
             }
         }*/
 

@@ -3,10 +3,14 @@ package fr.campus.main;
 import fr.campus.board.Cell;
 import fr.campus.player.ArtificialPlayer;
 import fr.campus.player.Player;
+import fr.campus.InteractionUtilisateur;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import fr.campus.View;
+
 
 public class Game {
     public static final int SIZE = 3;
@@ -15,6 +19,8 @@ public class Game {
     private int size;
     private final Player[] players = new Player[2];
     private int currentPlayerIndex = 0;
+    private final View view = new View();
+
 
     public Game(Scanner scanner, int size) {
         this.scanner = scanner;
@@ -47,7 +53,7 @@ public class Game {
 
     public boolean isOver() {
         if (isBoardFull()) {
-            System.out.println("Match nul !");
+            view.println("Match nul !");
             return true;
         }
 
@@ -55,13 +61,13 @@ public class Game {
             for (int y = 0; y < size; y++) {
 
                 if (!board[x][y].isEmpty() && checkWin(x, y)) {
-                    System.out.println("Le joueur " + board[x][y].getSymbol() + " a gagné !");
+                    view.println("Le joueur " + board[x][y].getSymbol() + " a gagné !");
                     return true;
                 }
             }
         }
         if (isBoardFull()) {
-            System.out.println("Match nul !");
+            view.println("Match nul !");
             return true;
         }
         return false;
@@ -93,7 +99,7 @@ public class Game {
         int newX = x + dx;
         int newY = y + dy;
 
-        while (newX >= 0 && newX < SIZE && newY >= 0 && newY < SIZE && board[newX][newY].getSymbol().equals(symbol)) {
+        while (newX >= 0 && newX < size && newY >= 0 && newY < size && board[newX][newY].getSymbol().equals(symbol)) {
             count++;
             newX += dx;
             newY += dy;
@@ -115,44 +121,88 @@ public class Game {
     }
 
     public void start() {
-        String symbole = "";
+        String symbole = "X";
 
-        while (!symbole.equals("X") && !symbole.equals("O")) {
-            System.out.print("Choisissez votre symbole (X ou O) : ");
-            symbole = scanner.nextLine().trim().toUpperCase();
+        view.println("Choisissez votre mode de jeu :  1=Humain vs IA  2=Humain vs Humain 3=IA vs IA");
+        String mode = scanner.nextLine().trim().toUpperCase();
+        /*if(mode.isEmpty()) mode = ;*/
 
-            if (!symbole.equals("X") && !symbole.equals("O")) {
-                System.out.println("symbole invalide.");
+
+        if (!mode.equals("3")) {
+            symbole = "";
+            while (!symbole.equals("X") && !symbole.equals("O")) {
+                view.println("Choisissez votre symbole (X ou O) : ");
+                symbole = scanner.nextLine().trim().toUpperCase();
+                if (!symbole.equals("X") && !symbole.equals("O")) {
+                    view.println("symbole invalide.");
+                }
             }
         }
-        if (symbole.equals("X")) {
-            players[0] = new Player("X", scanner);
-            players[1] = new ArtificialPlayer("O");
-        } else {
-            players[0] = new Player("O", scanner);
-            players[1] = new ArtificialPlayer("X");
+
+
+        switch (mode) {
+            case "1":
+                if (symbole.equals("X")) {
+                    players[0] = new Player("X", scanner, view);
+                    players[1] = new ArtificialPlayer("O");
+                } else {
+                    players[0] = new Player("O", scanner, view);
+                    players[1] = new ArtificialPlayer("X");
+                }
+                currentPlayerIndex = 0;
+                view.println("J1" + players[0].getRepresentation() + " J2" + players[1].getRepresentation());
+                break;
+
+            case "2":
+                if (symbole.equals("X")) {
+                    players[0] = new Player("X", scanner, view);
+                    players[1] = new Player("O", scanner, view);
+                } else {
+                    players[0] = new Player("O", scanner, view);
+                    players[1] = new Player("X", scanner, view);
+                    currentPlayerIndex = 0;
+                    view.println("Tu joues avec : " + players[0].getRepresentation());
+                    break;
+                }
+            case "3":
+                if (symbole.equals("X")) {
+                    players[0] = new ArtificialPlayer("X");
+                    players[1] = new ArtificialPlayer("O");
+                } else {
+                    players[0] = new ArtificialPlayer("O");
+                    players[1] = new ArtificialPlayer("X");
+                    currentPlayerIndex = 0;
+                    view.println("Que le meilleur gagne : ");
+                    break;
+                }
+
+
         }
+
+
         currentPlayerIndex = 0;
 
-        System.out.println("Tu commences avec : " + players[currentPlayerIndex].getRepresentation());
+        view.println("Tu commences avec : " + players[currentPlayerIndex].
+
+                getRepresentation());
 
         display();
 
+
         while (true) {
             Player current = getCurrentPlayer();
-            System.out.println("Tour de : " + current.getRepresentation());
+            view.println("Tour de : " + current.getRepresentation());
 
             int[] mv = new int[2];
-            if (current instanceof ArtificialPlayer) {
-                mv = current.getMove();
+            /* if (current instanceof ArtificialPlayer) { */
+            mv = current.getMove();
 
-/*            } else {
-                mv = current.getMove();*/
+        /*    } else {
+                mv = current.getMove(); */
 
-            }
 
             if (!board[mv[0]][mv[1]].isEmpty()) {
-                System.out.println(" Cette case est déjà occupée. Réessayez.");
+                view.println(" Cette case est déjà occupée. Réessayez.");
                 continue;
             }
 
@@ -161,29 +211,24 @@ public class Game {
 
 
             if (checkWin(mv[0], mv[1])) {
-                System.out.println("Le joueur " + current.getRepresentation() + " a gagné !");
+                view.println("Le joueur " + current.getRepresentation() + " a gagné !");
                 break;
             }
             if (isBoardFull()) {
-                System.out.println("Match nul !");
+                view.println("Match nul !");
                 break;
             }
 
             switchPlayer();
+
         }
     }
 
+
     public void display() {
-        System.out.println(" ------------- ");
-        for (int i = 0; i < size; i++) {
-            System.out.print("|");
-            for (int j = 0; j < size; j++) {
-                System.out.print(board[i][j].getRepresentation() + "|");
-            }
-            System.out.println();
-            System.out.println(" ------------- ");
-        }
+        view.afficherPlateau(board);
     }
+
 
     protected List<int[]> getAvailable() {
         List<int[]> available = new ArrayList<>();
@@ -197,3 +242,4 @@ public class Game {
         return available;
     }
 }
+

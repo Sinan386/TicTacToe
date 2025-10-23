@@ -1,21 +1,22 @@
 package fr.campus.player;
 
 import java.util.Scanner;
+import fr.campus.View;
 
 import fr.campus.main.TicTacToe;
 import fr.campus.board.Cell;
 
-
-import org.w3c.dom.ls.LSOutput;
-
 public class Player {
     private String representation = "X";
     private final Scanner scanner;
+    private final View view;
 
 
-    public Player(String representation, Scanner scanner) {
+
+    public Player(String representation, Scanner scanner, View view) {
         this.representation = representation;
         this.scanner = scanner;
+        this.view = view;
     }
 
 
@@ -28,7 +29,7 @@ public class Player {
         int colonne = -1;
 
         while (true) {
-            System.out.print("Entre le numéro de la ligne (0, 1 ou 2) : ");
+            System.out.println("Entre le numéro de la ligne (0, 1 ou 2) : ");
             if (!scanner.hasNextInt()) {
                 System.out.println("Entrez un nombre !");
                 scanner.next();
@@ -36,7 +37,7 @@ public class Player {
             }
             ligne = scanner.nextInt();
 
-            System.out.print("Entre le numéro de la colonne (0, 1 ou 2) : ");
+            System.out.println("Entre le numéro de la colonne (0, 1 ou 2) : ");
             if (!scanner.hasNextInt()) {
                 System.out.println("Entrez un nombre !");
                 scanner.next();
