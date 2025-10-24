@@ -1,7 +1,6 @@
-package fr.campus.main;
+package fr.campus.view;
 
 import java.util.Scanner;
-import fr.campus.player.Player;
 
 
 /**

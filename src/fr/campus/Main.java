@@ -1,7 +1,7 @@
 package fr.campus;
 
-import fr.campus.main.Menu;
-import fr.campus.main.TicTacToe;
+import fr.campus.view.Menu;
+import fr.campus.game.TicTacToe;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package fr.campus;
+package fr.campus.view;
 
 
 import java.util.Scanner;

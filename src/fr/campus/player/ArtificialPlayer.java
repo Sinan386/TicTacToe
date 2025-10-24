@@ -1,8 +1,7 @@
 package fr.campus.player;
 
-import fr.campus.board.Cell;
 import java.util.Random;
-import fr.campus.main.Game;
+import fr.campus.game.Game;
 
 public class ArtificialPlayer extends Player {
 

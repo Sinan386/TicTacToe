@@ -1,5 +1,7 @@
-package fr.campus.main;
+package fr.campus.game;
 
+
+import fr.campus.view.Menu;
 
 public class TicTacToe extends Game {
 

@@ -1,15 +1,14 @@
-package fr.campus.main;
+package fr.campus.game;
 
 import fr.campus.board.Cell;
 import fr.campus.player.ArtificialPlayer;
 import fr.campus.player.Player;
-import fr.campus.InteractionUtilisateur;
-
+import fr.campus.view.InteractionUtilisateur;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import fr.campus.View;
+import fr.campus.view.View;
 
 
 public class Game {
@@ -20,12 +19,14 @@ public class Game {
     private final Player[] players = new Player[2];
     private int currentPlayerIndex = 0;
     private final View view = new View();
+    private final InteractionUtilisateur io;
 
 
     public Game(Scanner scanner, int size) {
         this.scanner = scanner;
         this.size = size;
         this.board = new Cell[size][size];
+        this.io = new InteractionUtilisateur(scanner);
     }
 
     public Cell[][] getBoard() {
@@ -121,7 +122,9 @@ public class Game {
     }
 
     public void start() {
+        initBoard();
         String symbole = "X";
+
 
         view.println("Choisissez votre mode de jeu :  1=Humain vs IA  2=Humain vs Humain 3=IA vs IA");
         String mode = scanner.nextLine().trim().toUpperCase();
@@ -143,10 +146,10 @@ public class Game {
         switch (mode) {
             case "1":
                 if (symbole.equals("X")) {
-                    players[0] = new Player("X", scanner, view);
+                    players[0] = new Player("X", io, view);
                     players[1] = new ArtificialPlayer("O");
                 } else {
-                    players[0] = new Player("O", scanner, view);
+                    players[0] = new Player("O", io, view);
                     players[1] = new ArtificialPlayer("X");
                 }
                 currentPlayerIndex = 0;
@@ -155,15 +158,16 @@ public class Game {
 
             case "2":
                 if (symbole.equals("X")) {
-                    players[0] = new Player("X", scanner, view);
-                    players[1] = new Player("O", scanner, view);
+                    players[0] = new Player("X", io, view);
+                    players[1] = new Player("O", io, view);
                 } else {
-                    players[0] = new Player("O", scanner, view);
-                    players[1] = new Player("X", scanner, view);
+                    players[0] = new Player("O", io, view);
+                    players[1] = new Player("X", io, view);
                     currentPlayerIndex = 0;
                     view.println("Tu joues avec : " + players[0].getRepresentation());
-                    break;
                 }
+                break;
+
             case "3":
                 if (symbole.equals("X")) {
                     players[0] = new ArtificialPlayer("X");
@@ -173,8 +177,8 @@ public class Game {
                     players[1] = new ArtificialPlayer("X");
                     currentPlayerIndex = 0;
                     view.println("Que le meilleur gagne : ");
-                    break;
                 }
+                break;
 
 
         }

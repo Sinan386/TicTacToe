@@ -1,7 +1,6 @@
-package fr.campus;
+package fr.campus.view;
 
 import fr.campus.board.Cell;
-import fr.campus.InteractionUtilisateur;
 
 public class View {
 
