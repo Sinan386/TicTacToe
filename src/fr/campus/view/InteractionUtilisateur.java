@@ -4,17 +4,17 @@ package fr.campus.view;
 import java.util.Scanner;
 
 public class InteractionUtilisateur {
-    private final Scanner scanner;
+    private final Scanner scanner = new Scanner(System.in);
+    private ViewConsole viewConsole;
 
-    public InteractionUtilisateur(Scanner scanner) {
-        this.scanner = scanner;
-    }
+    public InteractionUtilisateur() {
+        }
 
-    public int lireInt(String prompt, View view) {
+    public int askInt(String prompt) {
         while (true) {
-            view.print(prompt);
+            viewConsole.print(prompt);
             if (!scanner.hasNextInt()) {
-                view.println("Entrez un nombre !");
+                viewConsole.println("Entrez un nombre !");
                 scanner.next();
                 continue;
             }

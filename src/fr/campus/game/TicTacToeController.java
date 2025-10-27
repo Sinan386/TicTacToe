@@ -3,12 +3,12 @@ package fr.campus.game;
 
 import fr.campus.view.Menu;
 
-public class TicTacToe extends Game {
+public class TicTacToeController extends GameController {
 
     public  final  static int DEFAULT_SIZE = 3;
-    public TicTacToe game;
+    public TicTacToeController game;
 
-    public TicTacToe(Menu menu) {
+    public TicTacToeController(Menu menu) {
         super(menu.getScanner(), DEFAULT_SIZE);
         initBoard();
     }

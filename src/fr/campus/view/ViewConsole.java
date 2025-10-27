@@ -2,7 +2,7 @@ package fr.campus.view;
 
 import fr.campus.board.Cell;
 
-public class View {
+public class ViewConsole {
 
     public void println(String text) {
         System.out.println(text);

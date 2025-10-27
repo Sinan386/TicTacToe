@@ -1,7 +1,7 @@
 package fr.campus.player;
 
 import java.util.Random;
-import fr.campus.game.Game;
+import fr.campus.game.GameController;
 
 public class ArtificialPlayer extends Player {
 
@@ -16,8 +16,8 @@ public class ArtificialPlayer extends Player {
 
     public int[] getMove () {
 
-        int i = random.nextInt(Game.SIZE);
-        int j = random.nextInt(Game.SIZE);
+        int i = random.nextInt(GameController.SIZE);
+        int j = random.nextInt(GameController.SIZE);
         return new int[]{i, j};
 
     }

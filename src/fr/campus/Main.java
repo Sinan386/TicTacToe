@@ -1,11 +1,11 @@
 package fr.campus;
 
 import fr.campus.view.Menu;
-import fr.campus.game.TicTacToe;
+import fr.campus.game.TicTacToeController;
 
 public class Main {
     public static void main(String[] args) {
-        TicTacToe game = new TicTacToe(new Menu());
+        TicTacToeController game = new TicTacToeController(new Menu());
         game.start();
     }
 

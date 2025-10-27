@@ -8,25 +8,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import fr.campus.view.View;
+import fr.campus.view.ViewConsole;
 
 
-public class Game {
+public class GameController {
     public static final int SIZE = 3;
     protected final Scanner scanner;
     private final Cell[][] board;
     private int size;
     private final Player[] players = new Player[2];
     private int currentPlayerIndex = 0;
-    private final View view = new View();
+    private final ViewConsole viewConsole = new ViewConsole();
     private final InteractionUtilisateur io;
 
 
-    public Game(Scanner scanner, int size) {
+    public GameController(Scanner scanner, int size) {
         this.scanner = scanner;
         this.size = size;
         this.board = new Cell[size][size];
-        this.io = new InteractionUtilisateur(scanner);
+        this.io = new InteractionUtilisateur();
     }
 
     public Cell[][] getBoard() {
@@ -54,7 +54,7 @@ public class Game {
 
     public boolean isOver() {
         if (isBoardFull()) {
-            view.println("Match nul !");
+            viewConsole.println("Match nul !");
             return true;
         }
 
@@ -62,13 +62,13 @@ public class Game {
             for (int y = 0; y < size; y++) {
 
                 if (!board[x][y].isEmpty() && checkWin(x, y)) {
-                    view.println("Le joueur " + board[x][y].getSymbol() + " a gagné !");
+                    viewConsole.println("Le joueur " + board[x][y].getSymbol() + " a gagné !");
                     return true;
                 }
             }
         }
         if (isBoardFull()) {
-            view.println("Match nul !");
+            viewConsole.println("Match nul !");
             return true;
         }
         return false;
@@ -126,7 +126,7 @@ public class Game {
         String symbole = "X";
 
 
-        view.println("Choisissez votre mode de jeu :  1=Humain vs IA  2=Humain vs Humain 3=IA vs IA");
+        viewConsole.println("Choisissez votre mode de jeu :  1=Humain vs IA  2=Humain vs Humain 3=IA vs IA");
         String mode = scanner.nextLine().trim().toUpperCase();
         /*if(mode.isEmpty()) mode = ;*/
 
@@ -134,10 +134,10 @@ public class Game {
         if (!mode.equals("3")) {
             symbole = "";
             while (!symbole.equals("X") && !symbole.equals("O")) {
-                view.println("Choisissez votre symbole (X ou O) : ");
+                viewConsole.println("Choisissez votre symbole (X ou O) : ");
                 symbole = scanner.nextLine().trim().toUpperCase();
                 if (!symbole.equals("X") && !symbole.equals("O")) {
-                    view.println("symbole invalide.");
+                    viewConsole.println("symbole invalide.");
                 }
             }
         }
@@ -146,25 +146,25 @@ public class Game {
         switch (mode) {
             case "1":
                 if (symbole.equals("X")) {
-                    players[0] = new Player("X", io, view);
+                    players[0] = new Player("X", io, viewConsole);
                     players[1] = new ArtificialPlayer("O");
                 } else {
-                    players[0] = new Player("O", io, view);
+                    players[0] = new Player("O", io, viewConsole);
                     players[1] = new ArtificialPlayer("X");
                 }
                 currentPlayerIndex = 0;
-                view.println("J1" + players[0].getRepresentation() + " J2" + players[1].getRepresentation());
+                viewConsole.println("J1" + players[0].getRepresentation() + " J2" + players[1].getRepresentation());
                 break;
 
             case "2":
                 if (symbole.equals("X")) {
-                    players[0] = new Player("X", io, view);
-                    players[1] = new Player("O", io, view);
+                    players[0] = new Player("X", io, viewConsole);
+                    players[1] = new Player("O", io, viewConsole);
                 } else {
-                    players[0] = new Player("O", io, view);
-                    players[1] = new Player("X", io, view);
+                    players[0] = new Player("O", io, viewConsole);
+                    players[1] = new Player("X", io, viewConsole);
                     currentPlayerIndex = 0;
-                    view.println("Tu joues avec : " + players[0].getRepresentation());
+                    viewConsole.println("Tu joues avec : " + players[0].getRepresentation());
                 }
                 break;
 
@@ -176,7 +176,7 @@ public class Game {
                     players[0] = new ArtificialPlayer("O");
                     players[1] = new ArtificialPlayer("X");
                     currentPlayerIndex = 0;
-                    view.println("Que le meilleur gagne : ");
+                    viewConsole.println("Que le meilleur gagne : ");
                 }
                 break;
 
@@ -186,7 +186,7 @@ public class Game {
 
         currentPlayerIndex = 0;
 
-        view.println("Tu commences avec : " + players[currentPlayerIndex].
+        viewConsole.println("Tu commences avec : " + players[currentPlayerIndex].
 
                 getRepresentation());
 
@@ -195,7 +195,7 @@ public class Game {
 
         while (true) {
             Player current = getCurrentPlayer();
-            view.println("Tour de : " + current.getRepresentation());
+            viewConsole.println("Tour de : " + current.getRepresentation());
 
             int[] mv = new int[2];
             /* if (current instanceof ArtificialPlayer) { */
@@ -206,7 +206,7 @@ public class Game {
 
 
             if (!board[mv[0]][mv[1]].isEmpty()) {
-                view.println(" Cette case est déjà occupée. Réessayez.");
+                viewConsole.println(" Cette case est déjà occupée. Réessayez.");
                 continue;
             }
 
@@ -215,11 +215,11 @@ public class Game {
 
 
             if (checkWin(mv[0], mv[1])) {
-                view.println("Le joueur " + current.getRepresentation() + " a gagné !");
+                viewConsole.println("Le joueur " + current.getRepresentation() + " a gagné !");
                 break;
             }
             if (isBoardFull()) {
-                view.println("Match nul !");
+                viewConsole.println("Match nul !");
                 break;
             }
 
@@ -230,7 +230,7 @@ public class Game {
 
 
     public void display() {
-        view.afficherPlateau(board);
+        viewConsole.afficherPlateau(board);
     }
 
 
