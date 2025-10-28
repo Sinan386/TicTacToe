@@ -1,35 +1,38 @@
 package fr.campus.game;
 
+import fr.campus.board.Board;
 import fr.campus.board.Cell;
 import fr.campus.player.ArtificialPlayer;
 import fr.campus.player.Player;
 import fr.campus.view.InteractionUtilisateur;
 import java.util.ArrayList;
 import java.util.List;
+import fr.campus.view.ViewConsole;
 import java.util.Scanner;
 
-import fr.campus.view.ViewConsole;
-
-
 public class GameController {
+
+    private final Board board;
     public static final int SIZE = 3;
-    protected final Scanner scanner;
-    private final Cell[][] board;
-    private int size;
-    private final Player[] players = new Player[2];
+    private int size = SIZE;
+    private final Player[] players ;
     private int currentPlayerIndex = 0;
-    private final ViewConsole viewConsole = new ViewConsole();
+    private final ViewConsole viewConsole;
     private final InteractionUtilisateur io;
+    private final Scanner scanner = new Scanner(System.in);
 
 
-    public GameController(Scanner scanner, int size) {
-        this.scanner = scanner;
-        this.size = size;
-        this.board = new Cell[size][size];
+    public GameController() {
+
+        this.players = new Player[2];
+        this.size = SIZE;
+        this.board = new Board(size, size);
         this.io = new InteractionUtilisateur();
+        this.viewConsole = new ViewConsole();
+
     }
 
-    public Cell[][] getBoard() {
+    public Board getBoard() {
         return board;
     }
 
@@ -41,19 +44,10 @@ public class GameController {
         currentPlayerIndex = 1 - currentPlayerIndex;
     }
 
-    protected boolean isBoardFull() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board[i][j].isEmpty()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+
 
     public boolean isOver() {
-        if (isBoardFull()) {
+        if (board.isBoardFull()) {
             viewConsole.println("Match nul !");
             return true;
         }
@@ -61,13 +55,13 @@ public class GameController {
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
 
-                if (!board[x][y].isEmpty() && checkWin(x, y)) {
-                    viewConsole.println("Le joueur " + board[x][y].getSymbol() + " a gagné !");
+                if (!board.getCell(x,y).isEmpty() && checkWin(x, y)) {
+                    viewConsole.println("Le joueur " + board.getCell(x,y).getSymbol() + " a gagné !");
                     return true;
                 }
             }
         }
-        if (isBoardFull()) {
+        if (board.isBoardFull()) {
             viewConsole.println("Match nul !");
             return true;
         }
@@ -75,24 +69,27 @@ public class GameController {
     }
 
     private boolean checkWin(int x, int y) {
-        String symbol = board[x][y].getSymbol();
+
+        int winLength = board.getWinLength();
+        String symbol = board.getCell(x,y).getSymbol();
         if (symbol.isEmpty()) return false;
 
         // Horizontal
-        int count = 1 + countInDirection(x, y, 0, +1, symbol) + countInDirection(x, y, 0, -1, symbol);
-        if (count >= 3) return true;
+        int count = 1 + countInDirection(x, y, 0, +1, symbol) +
+                countInDirection(x, y, 0, -1, symbol);
+        if (count >= winLength) return true;
 
         // Vertical
         count = 1 + countInDirection(x, y, +1, 0, symbol) + countInDirection(x, y, -1, 0, symbol);
-        if (count >= 3) return true;
+        if (count >= winLength) return true;
 
         // Diagonale gauche droite
         count = 1 + countInDirection(x, y, +1, +1, symbol) + countInDirection(x, y, -1, -1, symbol);
-        if (count >= 3) return true;
+        if (count >= winLength) return true;
 
         // Diagonale droite gauche
         count = 1 + countInDirection(x, y, +1, -1, symbol) + countInDirection(x, y, -1, +1, symbol);
-        return count >= 3;
+        return count >= winLength;
     }
 
     private int countInDirection(int x, int y, int dx, int dy, String symbol) {
@@ -100,7 +97,9 @@ public class GameController {
         int newX = x + dx;
         int newY = y + dy;
 
-        while (newX >= 0 && newX < size && newY >= 0 && newY < size && board[newX][newY].getSymbol().equals(symbol)) {
+        while (newX >= 0 && newX < size
+                && newY >= 0 && newY < size
+                && board.getCell(newX, newY).getSymbol().equals(symbol)) {
             count++;
             newX += dx;
             newY += dy;
@@ -110,15 +109,12 @@ public class GameController {
     }
 
     private void playMove(int row, int col, Player player) {
-        board[row][col].setSymbol(player.getRepresentation()); // "X" ou "O"
+        board.getCell(row, col).setSymbol(player.getRepresentation()); // "X" ou "O"
     }
 
     protected void initBoard() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                board[i][j] = new Cell();
-            }
-        }
+        board.initBoard();
+
     }
 
     public void start() {
@@ -205,7 +201,7 @@ public class GameController {
                 mv = current.getMove(); */
 
 
-            if (!board[mv[0]][mv[1]].isEmpty()) {
+            if (!board.getCell(mv[0], mv[1]).isEmpty()) {
                 viewConsole.println(" Cette case est déjà occupée. Réessayez.");
                 continue;
             }
@@ -218,7 +214,7 @@ public class GameController {
                 viewConsole.println("Le joueur " + current.getRepresentation() + " a gagné !");
                 break;
             }
-            if (isBoardFull()) {
+            if (board.isBoardFull()) {
                 viewConsole.println("Match nul !");
                 break;
             }
@@ -230,7 +226,7 @@ public class GameController {
 
 
     public void display() {
-        viewConsole.afficherPlateau(board);
+        viewConsole.afficherPlateau(board.toArray());
     }
 
 
@@ -238,7 +234,7 @@ public class GameController {
         List<int[]> available = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (board[i][j].isEmpty()) {
+                if (board.getCell(i, j).isEmpty()) {
                     available.add(new int[]{i, j});
                 }
             }

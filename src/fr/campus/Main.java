@@ -5,7 +5,7 @@ import fr.campus.game.TicTacToeController;
 
 public class Main {
     public static void main(String[] args) {
-        TicTacToeController game = new TicTacToeController(new Menu());
+        TicTacToeController game = new TicTacToeController();
         game.start();
     }
 

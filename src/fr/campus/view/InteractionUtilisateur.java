@@ -8,11 +8,11 @@ public class InteractionUtilisateur {
     private ViewConsole viewConsole;
 
     public InteractionUtilisateur() {
-        }
+    }
 
     public int askInt(String prompt) {
         while (true) {
-            viewConsole.print(prompt);
+            System.out.print(prompt);
             if (!scanner.hasNextInt()) {
                 viewConsole.println("Entrez un nombre !");
                 scanner.next();
@@ -22,6 +22,11 @@ public class InteractionUtilisateur {
             scanner.nextLine();
             return val;
         }
+    }
+
+    public String askLine(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
     }
 }
 

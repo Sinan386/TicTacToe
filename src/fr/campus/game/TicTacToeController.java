@@ -5,12 +5,12 @@ import fr.campus.view.Menu;
 
 public class TicTacToeController extends GameController {
 
-    public  final  static int DEFAULT_SIZE = 3;
-    public TicTacToeController game;
 
-    public TicTacToeController(Menu menu) {
-        super(menu.getScanner(), DEFAULT_SIZE);
-        initBoard();
+
+
+    public TicTacToeController() {
+        super();
+
     }
 
 
