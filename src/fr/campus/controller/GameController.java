@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import fr.campus.view.ViewConsole;
 import java.util.Scanner;
+import fr.campus.model.TicTacToeModel;
+
 
 public class GameController {
 
@@ -19,6 +21,7 @@ public class GameController {
     private final ViewConsole viewConsole;
     private final InteractionUtilisateur io;
     private final Scanner scanner = new Scanner(System.in);
+    private final TicTacToeModel model;
 
 
     public GameController() {
@@ -28,6 +31,8 @@ public class GameController {
         this.board = new Board(size, size);
         this.io = new InteractionUtilisateur();
         this.viewConsole = new ViewConsole();
+        this.model = new TicTacToeModel(this.board, this.players);
+
 
     }
 
@@ -69,26 +74,7 @@ public class GameController {
 
     private boolean checkWin(int x, int y) {
 
-        int winLength = board.getWinLength();
-        String symbol = board.getCell(x,y).getSymbol();
-        if (symbol.isEmpty()) return false;
-
-        // Horizontal
-        int count = 1 + countInDirection(x, y, 0, +1, symbol) +
-                countInDirection(x, y, 0, -1, symbol);
-        if (count >= winLength) return true;
-
-        // Vertical
-        count = 1 + countInDirection(x, y, +1, 0, symbol) + countInDirection(x, y, -1, 0, symbol);
-        if (count >= winLength) return true;
-
-        // Diagonale gauche droite
-        count = 1 + countInDirection(x, y, +1, +1, symbol) + countInDirection(x, y, -1, -1, symbol);
-        if (count >= winLength) return true;
-
-        // Diagonale droite gauche
-        count = 1 + countInDirection(x, y, +1, -1, symbol) + countInDirection(x, y, -1, +1, symbol);
-        return count >= winLength;
+        return model.checkWin(x, y);
     }
 
     private int countInDirection(int x, int y, int dx, int dy, String symbol) {
@@ -108,7 +94,7 @@ public class GameController {
     }
 
     private void playMove(int row, int col, Player player) {
-        board.getCell(row, col).setSymbol(player.getRepresentation()); // "X" ou "O"
+        return model.playMove(row, col, player); // "X" ou "O"
     }
 
     protected void initBoard() {
@@ -230,15 +216,7 @@ public class GameController {
 
 
     protected List<int[]> getAvailable() {
-        List<int[]> available = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board.getCell(i, j).isEmpty()) {
-                    available.add(new int[]{i, j});
-                }
-            }
-        }
-        return available;
+        return model.getAvailable();
     }
 }
 
