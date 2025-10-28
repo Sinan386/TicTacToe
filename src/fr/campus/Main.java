@@ -1,7 +1,6 @@
 package fr.campus;
 
-import fr.campus.view.Menu;
-import fr.campus.game.TicTacToeController;
+import fr.campus.controller.TicTacToeController;
 
 public class Main {
     public static void main(String[] args) {

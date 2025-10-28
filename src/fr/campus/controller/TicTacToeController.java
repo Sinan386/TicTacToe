@@ -1,7 +1,5 @@
-package fr.campus.game;
+package fr.campus.controller;
 
-
-import fr.campus.view.Menu;
 
 public class TicTacToeController extends GameController {
 

@@ -1,6 +1,102 @@
 # Diagramme
 ```mermaid
 classDiagram
+    direction BT
+    class ArtificialPlayer {
+        + ArtificialPlayer(String)
+        int[] move
+    }
+    class Board {
+        + Board(int, int)
+        ~ int sizeLigne
+        ~ int sizeColonne
+        - int winLength
+        + initBoard() void
+        + toArray() Cell[][]
+        + getCell(int, int) Cell
+        - inBounds(int, int) boolean
+        int winLength
+        int sizeLigne
+        int sizeColonne
+        boolean boardFull
+    }
+    class Cell {
+        + Cell()
+        - String symbol
+        boolean empty
+        String representation
+        String symbol
+    }
+    class GameController {
+        + GameController()
+        - Board board
+        # initBoard() void
+        - playMove(int, int, Player) void
+        + display() void
+        - switchPlayer() void
+        + start() void
+        - checkWin(int, int) boolean
+        - countInDirection(int, int, int, int, String) int
+        Board board
+        Player currentPlayer
+        boolean over
+        List~int[]~ available
+    }
+    class GamerInterface {
+        <<Interface>>
+
+    }
+    class InteractionUtilisateur {
+        + InteractionUtilisateur()
+        + askInt(String) int
+        + askLine(String) String
+    }
+    class Main {
+        + Main()
+        + main(String[]) void
+    }
+    class Menu {
+        + Menu()
+        - Scanner scanner
+        Scanner scanner
+    }
+    class Player {
+        + Player(String, InteractionUtilisateur, ViewConsole)
+        - String representation
+        String representation
+        int[] move
+    }
+    class TicTacToeController {
+        + TicTacToeController()
+    }
+    class ViewConsole {
+        + ViewConsole()
+        + print(String) void
+        + println(String) void
+        + afficherPlateau(Cell[][]) void
+    }
+
+    ArtificialPlayer  -->  Player
+    Board  ..>  Cell : «create»
+    Board "1" *--> "board *" Cell
+    GameController  ..>  ArtificialPlayer : «create»
+    GameController "1" *--> "board 1" Board
+    GameController  ..>  Board : «create»
+    GameController  ..>  InteractionUtilisateur : «create»
+    GameController "1" *--> "io 1" InteractionUtilisateur
+    GameController "1" *--> "players *" Player
+    GameController  ..>  Player : «create»
+    GameController "1" *--> "viewConsole 1" ViewConsole
+    GameController  ..>  ViewConsole : «create»
+    InteractionUtilisateur "1" *--> "viewConsole 1" ViewConsole
+    Main  ..>  TicTacToeController : «create»
+    Player "1" *--> "io 1" InteractionUtilisateur
+    Player "1" *--> "viewConsole 1" ViewConsole
+    TicTacToeController  -->  GameController
+```
+
+```mermaid
+classDiagram
     class Main {
         +void main(String[] args)
     }

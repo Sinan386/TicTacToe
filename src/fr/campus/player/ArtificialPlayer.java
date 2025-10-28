@@ -1,7 +1,7 @@
 package fr.campus.player;
 
 import java.util.Random;
-import fr.campus.game.GameController;
+import fr.campus.controller.GameController;
 
 public class ArtificialPlayer extends Player {
 

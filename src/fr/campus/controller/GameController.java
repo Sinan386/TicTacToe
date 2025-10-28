@@ -1,7 +1,6 @@
-package fr.campus.game;
+package fr.campus.controller;
 
 import fr.campus.board.Board;
-import fr.campus.board.Cell;
 import fr.campus.player.ArtificialPlayer;
 import fr.campus.player.Player;
 import fr.campus.view.InteractionUtilisateur;

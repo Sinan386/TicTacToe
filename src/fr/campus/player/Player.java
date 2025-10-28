@@ -2,7 +2,7 @@ package fr.campus.player;
 
 import fr.campus.view.InteractionUtilisateur;
 import fr.campus.view.ViewConsole;
-import fr.campus.game.TicTacToeController;
+import fr.campus.controller.TicTacToeController;
 
 public class Player {
     private final String representation;
