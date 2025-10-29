@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"fr.campus"},{"l":"fr.campus.board"},{"l":"fr.campus.controller"},{"l":"fr.campus.model"},{"l":"fr.campus.player"},{"l":"fr.campus.view"}];updateSearchResults();
