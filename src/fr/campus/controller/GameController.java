@@ -24,6 +24,7 @@ public class GameController {
     private final TicTacToeModel model;
 
 
+
     public GameController() {
 
         this.players = new Player[2];
@@ -31,7 +32,7 @@ public class GameController {
         this.board = new Board(size, size);
         this.io = new InteractionUtilisateur();
         this.viewConsole = new ViewConsole();
-        this.model = new TicTacToeModel(this.board, this.players);
+        this.model = new TicTacToeModel(this.board);
 
 
     }
@@ -94,32 +95,34 @@ public class GameController {
     }
 
     private void playMove(int row, int col, Player player) {
-        return model.playMove(row, col, player); // "X" ou "O"
+        model.playMove(row, col, player); // "X" ou "O"
     }
 
     protected void initBoard() {
-        board.initBoard();
+        model.initBoard();
 
     }
 
     public void start() {
         initBoard();
         String symbole = "X";
+        String mode = null;
+
+        while (mode == null || !(mode.equals("1") || mode.equals("2") || mode.equals("3"))) {
+            viewConsole.println("Choisissez votre mode de jeu :  1=Humain vs IA  2=Humain vs Humain  3=IA vs IA");
+            viewConsole.print("> ");
+            mode = scanner.nextLine().trim();
+        }
 
 
-        viewConsole.println("Choisissez votre mode de jeu :  1=Humain vs IA  2=Humain vs Humain 3=IA vs IA");
-        String mode = scanner.nextLine().trim().toUpperCase();
-        /*if(mode.isEmpty()) mode = ;*/
 
 
         if (!mode.equals("3")) {
-            symbole = "";
-            while (!symbole.equals("X") && !symbole.equals("O")) {
+            symbole = null;
+            while (symbole == null || !(symbole.equals("X") || symbole.equals("O"))) {
                 viewConsole.println("Choisissez votre symbole (X ou O) : ");
+                viewConsole.print("> ");
                 symbole = scanner.nextLine().trim().toUpperCase();
-                if (!symbole.equals("X") && !symbole.equals("O")) {
-                    viewConsole.println("symbole invalide.");
-                }
             }
         }
 
@@ -178,22 +181,38 @@ public class GameController {
             Player current = getCurrentPlayer();
             viewConsole.println("Tour de : " + current.getRepresentation());
 
-            int[] mv = new int[2];
-            /* if (current instanceof ArtificialPlayer) { */
-            mv = current.getMove();
+            int[] mv;
+            if (current instanceof ArtificialPlayer) {
 
-        /*    } else {
-                mv = current.getMove(); */
+                java.util.Random rnd = new java.util.Random();
+                int n = size; // ou board.getSizeLigne()
+                while (true) {
+                    int r = rnd.nextInt(n);
+                    int c = rnd.nextInt(n);
+                    if (model.isValidMove(r, c)) {
+                        mv = new int[]{r, c};
+                        break;
+                    }
+                }
+            } else {
 
-
-            if (!board.getCell(mv[0], mv[1]).isEmpty()) {
-                viewConsole.println(" Cette case est déjà occupée. Réessayez.");
-                continue;
+                while (true) {
+                    mv = current.getMove();
+                    if (mv == null || mv.length != 2) {
+                        viewConsole.println("Format de coordonnées invalide. Réessayez.");
+                        continue;
+                    }
+                    if (!model.isValidMove(mv[0], mv[1])) {
+                        viewConsole.println(" Cette case est déjà occupée OU hors plateau. Réessayez.");
+                        continue;
+                    }
+                    break;
+                }
             }
+
 
             playMove(mv[0], mv[1], current);
             display();
-
 
             if (checkWin(mv[0], mv[1])) {
                 viewConsole.println("Le joueur " + current.getRepresentation() + " a gagné !");

@@ -2,67 +2,95 @@ package fr.campus.model;
 
 import fr.campus.board.Board;
 import fr.campus.player.Player;
-import fr.campus.board.Cell;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TicTacToeModel {
-    private final Board board;
-    private final Player[] players;
-    private int currentPlayerIndex = 0;
 
-    public TicTacToeModel(Board board, Player[] players) {
+    private final Board board;
+
+    public TicTacToeModel(Board board) {
         this.board = board;
-        this.players = players;
     }
+
 
     public Board getBoard() { return board; }
-    public int getSize() { return board.board.length; }        // si board exposé
-    public int getWinLength() { return board.getWinLength(); }
 
-    public Player getCurrentPlayer() { return players[currentPlayerIndex]; }
-    public void switchPlayer() { currentPlayerIndex = 1 - currentPlayerIndex; }
 
-    public boolean playMove(int row, int col, Player p) {
-        Cell c = board.getCell(row, col);
-        if (!c.isEmpty()) return false;
-        c.setSymbol(p.getRepresentation());
-        return true;
+    public void initBoard() { board.initBoard(); }
+    public boolean isBoardFull() { return board.isBoardFull(); }
+
+
+    public void playMove(int row, int col, Player player) {
+        board.getCell(row, col).setSymbol(player.getRepresentation());
     }
 
-    public boolean checkWin(int row, int col) {
-        String s = board.getCell(row, col).getSymbol();
-        if (s.isEmpty()) return false;
-        int need = getWinLength();
-        return 1 + countInDirection(row, col, 0, 1, s) + countInDirection(row, col, 0,-1, s) >= need ||
-                1 + countInDirection(row, col, 1, 0, s) + countInDirection(row, col,-1, 0, s) >= need ||
-                1 + countInDirection(row, col, 1, 1, s) + countInDirection(row, col,-1,-1, s) >= need ||
-                1 + countInDirection(row, col, 1,-1, s) + countInDirection(row, col,-1, 1, s) >= need;
+
+    public boolean isValidMove(int r, int c) {
+        int maxR = board.getSizeLigne();
+        int maxC = board.getSizeColonne();
+        if (r < 0 || r >= maxR || c < 0 || c >= maxC) return false;
+        return board.getCell(r, c).isEmpty();
     }
 
-    private int countInDirection(int r, int c, int dr, int dc, String s) {
-        int n = getSize(), k = 0;
-        int i = r + dr, j = c + dc;
-        while (i >= 0 && i < n && j >= 0 && j < n && board.getCell(i, j).getSymbol().equals(s)) {
-            k++; i += dr; j += dc;
+
+    public boolean checkWin(int x, int y) {
+        int winLength = board.getWinLength();
+        String symbol = board.getCell(x, y).getSymbol();
+        if (symbol == null || symbol.isEmpty()) return false;
+
+        // Horizontal
+        int count = 1 + countInDirection(x, y, 0, +1, symbol)
+                + countInDirection(x, y, 0, -1, symbol);
+        if (count >= winLength) return true;
+
+        // Vertical
+        count = 1 + countInDirection(x, y, +1, 0, symbol)
+                + countInDirection(x, y, -1, 0, symbol);
+        if (count >= winLength) return true;
+
+        // Diagonale
+        count = 1 + countInDirection(x, y, +1, +1, symbol)
+                + countInDirection(x, y, -1, -1, symbol);
+        if (count >= winLength) return true;
+
+        // Diagonale
+        count = 1 + countInDirection(x, y, +1, -1, symbol)
+                + countInDirection(x, y, -1, +1, symbol);
+        return count >= winLength;
+    }
+
+    public int countInDirection(int x, int y, int dx, int dy, String symbol) {
+        int count = 0;
+        int newX = x + dx;
+        int newY = y + dy;
+
+        int maxR = board.getSizeLigne();
+        int maxC = board.getSizeColonne();
+
+        while (newX >= 0 && newX < maxR
+                && newY >= 0 && newY < maxC
+                && board.getCell(newX, newY).getSymbol().equals(symbol)) {
+            count++;
+            newX += dx;
+            newY += dy;
         }
-        return k;
+        return count;
     }
 
-    public boolean isBoardFull() {
-        int n = getSize();
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                if (board.getCell(i, j).isEmpty()) return false;
-        return true;
-    }
 
     public List<int[]> getAvailable() {
-        int n = getSize();
-        List<int[]> free = new ArrayList<>();
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                if (board.getCell(i, j).isEmpty()) free.add(new int[]{i, j});
-        return free;
+        List<int[]> available = new ArrayList<>();
+        int maxR = board.getSizeLigne();
+        int maxC = board.getSizeColonne();
+        for (int i = 0; i < maxR; i++) {
+            for (int j = 0; j < maxC; j++) {
+                if (board.getCell(i, j).isEmpty()) {
+                    available.add(new int[]{i, j});
+                }
+            }
+        }
+        return available;
     }
 }
